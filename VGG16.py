@@ -120,3 +120,16 @@ for images, labels in testLoader:
 
 # Save the Trained Model
 torch.save(vgg16.state_dict(), 'cnn.pkl')
+
+#Quantization Implementations
+# create a model instance
+model_fp32 = VGG16()
+# create a quantized model instance
+model_int8 = torch.quantization.quantize_dynamic(
+    model_fp32,  # the original model
+    {tnn.Conv2d},  # a set of layers to dynamically quantize
+    dtype=torch.qint8)  # the target dtype for quantized weights
+
+# run the model
+input_fp32 = torch.randn(4, 4, 4, 4)
+res = model_int8(input_fp32)
